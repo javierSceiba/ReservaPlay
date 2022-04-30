@@ -1,0 +1,9 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# An example controller showing a sample home page
+POST    /reservas                           controladores.ReservaControlador.crear(request:Request)
+GET    /reservas/:idReserva                 controladores.ReservaControlador.consultar(idReserva:Long)
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
