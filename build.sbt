@@ -12,6 +12,7 @@ libraryDependencies ++= Seq(
   javaJdbc,
   javaJpa,
   jdbc,
+  evolutions,
   "mysql" % "mysql-connector-java" % "8.0.28",
   "org.hibernate" % "hibernate-core" % "5.2.17.Final",
   "net.jodah" % "failsafe" % "1.0.3",
