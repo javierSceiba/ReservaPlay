@@ -1,10 +1,8 @@
 package dominio.comandos;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import dominio.respuestas.Error;
 import dominio.respuestas.ErrorValidacion;
 import dominio.servicios.ServicioReserva;
-import infraestructura.dto.ReservaDTO;
 import infraestructura.reserva.adaptador.ReservaAdaptador;
 import io.vavr.concurrent.Future;
 import io.vavr.control.Either;
@@ -13,19 +11,15 @@ import play.Logger;
 
 import javax.inject.Inject;
 
-public class ConsultarReservaComando implements Comando{
+public class ConsultarReservaComando implements ComandoConsulta {
     private static final Logger.ALogger logger = Logger.of(RegistrarReservaComando.class);
     private ReservaAdaptador reservaAdaptador;
     private ServicioReserva servicioReserva;
 
     @Inject
-    public ConsultarReservaComando(ReservaAdaptador reservaAdaptador, ServicioReserva servicioReserva){
+    public ConsultarReservaComando(ReservaAdaptador reservaAdaptador, ServicioReserva servicioReserva) {
         this.reservaAdaptador = reservaAdaptador;
         this.servicioReserva = servicioReserva;
-    }
-    @Override
-    public Future<Consecuencia> ejecutar(JsonNode json) {
-        return null;
     }
 
     @Override
@@ -34,7 +28,7 @@ public class ConsultarReservaComando implements Comando{
         return (Future<Consecuencia>) this.consultarReserva(idReserva);
     }
 
-    private Future<Consecuencia> consultarReserva(Long idReserva){
+    private Future<Consecuencia> consultarReserva(Long idReserva) {
         return (servicioReserva.consultarReserva(idReserva))
                 .map(either -> either.fold(
                         error -> obtenerConsecuenciaFallida(error.getMensaje()),

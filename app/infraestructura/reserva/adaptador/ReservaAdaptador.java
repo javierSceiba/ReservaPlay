@@ -31,7 +31,6 @@ public class ReservaAdaptador {
                 .mapLeft(error -> {
                     String err = error.toString();
                     return List.of("Json invalido " + error.toString());
-
                 });
     }
     public Reserva transformar(ReservaDTO dto) {

@@ -24,14 +24,13 @@ public interface ReservaDAO {
     @SqlQuery("SELECT * FROM reserva WHERE id = :idReserva;")
     Reserva buscar(@Bind("idReserva") Long idReserva);
 
-    @SqlQuery("UPDATE reserva SET " +
-            "     nombre_cliente = COALESCE(:nombreCliente, nombre_cliente)," +
-            "     tipo_usuario = COALESCE(:tipoUsuario, tipo_usuario)," +
-            "     num_documento = COALESCE(:numDocumento, num_documento)," +
-            "     costo_reserva = COALESCE(:costoReserva, costo_reserva)," +
-            "     fecha_reserva = COALESCE(:fechaReserva, fecha_reserva)" +
+    @SqlUpdate("UPDATE reserva SET " +
+            "     nombre_cliente = :nombreCliente," +
+            "     tipo_usuario = :tipoUsuario," +
+            "     numero_documento = :numDocumento," +
+            "     costo_reserva = :costoReserva," +
+            "     fecha_reserva = :fechaReserva" +
             " WHERE id  = :idReserva ")
-
     @GetGeneratedKeys
     Long actualizar(
             @Bind("idReserva") Long idReserva,
@@ -42,4 +41,6 @@ public interface ReservaDAO {
             @Bind("fechaReserva") LocalDate fechaReserva
     );
 
+    @SqlQuery("select count(*) from reserva where numero_documento = :numDocumento and fecha_reserva  >= :fecha;")
+    Integer validarReservaActiva(@Bind("numDocumento") Integer numDocumento, @Bind("fecha") LocalDate fecha);
 }

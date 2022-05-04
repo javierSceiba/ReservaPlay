@@ -5,5 +5,7 @@
 # An example controller showing a sample home page
 POST    /reservas                           controladores.ReservaControlador.crear(request:Request)
 GET    /reservas/:idReserva                 controladores.ReservaControlador.consultar(idReserva:Long)
+PUT    /reservas/:idReserva                 controladores.ReservaControlador.actualizar(request:Request, idReserva:Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

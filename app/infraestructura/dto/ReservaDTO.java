@@ -18,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Setter
 public class ReservaDTO implements DTO {
 
@@ -81,8 +80,8 @@ public class ReservaDTO implements DTO {
         return Validation.combine(
                         validarId(this.id),
                         validarNombre(this.nombreCliente),
-                        validarDocumento(this.numeroDocumento),
                         validarTipo(this.tipoUsuario),
+                        validarDocumento(this.numeroDocumento),
                         validarFecha(this.fechaReserva)
                 ).ap(ReservaDTO::new);
     }
@@ -91,8 +90,8 @@ public class ReservaDTO implements DTO {
         return Validation.combine(
                 validarId(reserva.getId()),
                 validarNombre(reserva.getNombreCliente()),
-                validarDocumento(reserva.getNumeroDocumento()),
                 validarTipo(reserva.getTipoUsuario()),
+                validarDocumento(reserva.getNumeroDocumento()),
                 validarFecha(reserva.getFechaReserva())
         ).ap(ReservaDTO::new);
     }
@@ -111,7 +110,7 @@ public class ReservaDTO implements DTO {
     }
 
     private Validation<String, Integer> validarTipo(Integer tipo) {
-        return (tipo == 1 || tipo ==2) ? Validation.valid(tipo) : Validation.invalid("Tipo de usuario invalido");
+        return (tipo != null && (tipo == 1 || tipo ==2)) ? Validation.valid(tipo) : Validation.invalid("Tipo de usuario invalido");
 
     }
 
@@ -123,5 +122,29 @@ public class ReservaDTO implements DTO {
     private Validation<String, LocalDate> validarFecha(LocalDate fecha) {
         return Validation.valid(fecha);
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public Integer getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public Integer getNumeroDocumento() {
+        return numeroDocumento;
+    }
+
+    public Long getCostoReserva() {
+        return costoReserva;
+    }
+
+    public LocalDate getFechaReserva() {
+        return fechaReserva;
     }
 }

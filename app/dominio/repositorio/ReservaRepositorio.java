@@ -1,10 +1,6 @@
 package dominio.repositorio;
 
-import dominio.respuestas.Error;
-import infraestructura.dto.ReservaDTO;
 import io.vavr.concurrent.Future;
-import io.vavr.control.Either;
-import io.vavr.control.Option;
 import org.skife.jdbi.v2.DBI;
 import persistencia.*;
 import play.Logger;
@@ -12,6 +8,7 @@ import play.db.Database;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.time.LocalDate;
 
 @Singleton
 public class ReservaRepositorio {
@@ -24,20 +21,19 @@ public class ReservaRepositorio {
     }
 
     public Future<Long> insertar(Reserva reserva) {
-        ReservaRecord record = ReservaDAOAdaptador.transformar(reserva);
-        logger.error("insertando nueva reserva: " +  record.getId()+", "+
-                record.getNombreCliente()+", "+
-                record.getTipoUsuario()+", "+
-                record.getNumeroDocumento()+", "+
-                record.getCostoReserva()+", "+
-                record.getFechaReserva());
+        logger.error("insertando nueva reserva: " +  reserva.getId()+", "+
+                reserva.getNombreCliente()+", "+
+                reserva.getTipoUsuario()+", "+
+                reserva.getNumeroDocumento()+", "+
+                reserva.getCostoReserva()+", "+
+                reserva.getFechaReserva());
         return Future.of(() -> {
                     return new DBI(db.getDataSource()).onDemand(ReservaDAO.class).insertar(
-                            record.getNombreCliente(),
-                            record.getTipoUsuario(),
-                            record.getNumeroDocumento(),
-                            record.getCostoReserva(),
-                            record.getFechaReserva());
+                            reserva.getNombreCliente(),
+                            reserva.getTipoUsuario(),
+                            reserva.getNumeroDocumento(),
+                            reserva.getCostoReserva(),
+                            reserva.getFechaReserva());
                 }
         );
     }
@@ -52,16 +48,28 @@ public class ReservaRepositorio {
         );
     }
 
-    public Future<Long> actualizar(ReservaDTO reserva) {
+    public Future<Long> actualizar(Reserva reserva, Long idReserva) {
         logger.info("Actualizando reserva: " + reserva.getId());
         return Future.of(() -> {
                     return new DBI(db.getDataSource()).onDemand(ReservaDAO.class).actualizar(
-                            reserva.getId(),
+                            idReserva,
                             reserva.getNombreCliente(),
                             reserva.getTipoUsuario(),
                             reserva.getNumeroDocumento(),
                             reserva.getCostoReserva(),
                             reserva.getFechaReserva()
+                    );
+                }
+        );
+    }
+
+    public Future<Integer> validarReservaActiva(Reserva reserva) {
+        LocalDate fechaHoy = LocalDate.now();
+        logger.error("Validando existencia reserva: " + reserva.getNumeroDocumento()+ ", "+fechaHoy);
+        return Future.of(() -> {
+                    return new DBI(db.getDataSource()).onDemand(ReservaDAO.class).validarReservaActiva(
+                            reserva.getNumeroDocumento(),
+                            fechaHoy
                     );
                 }
         );

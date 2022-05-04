@@ -24,4 +24,11 @@ public class ServicioReserva {
         return reservaRepositorio.buscar(idReserva).map(Either::right);
     }
 
+    public Future<Either<Error, Long>> actualizarReserva(Reserva reserva, Long idReserva) {
+        return reservaRepositorio.actualizar(reserva, idReserva).map(Either::right);
+    }
+
+    public Future<Either<Error, Integer>> validarReservaActiva(Reserva reserva) {
+        return reservaRepositorio.validarReservaActiva(reserva).map(Either::right);
+    }
 }

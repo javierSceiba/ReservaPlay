@@ -2,6 +2,8 @@ package controladores;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import dominio.comandos.Comando;
+import dominio.comandos.ComandoActualizar;
+import dominio.comandos.ComandoConsulta;
 import dominio.respuestas.CodigosError;
 import dominio.respuestas.ErrorDominio;
 import dominio.respuestas.ErrorTecnico;
@@ -45,9 +47,20 @@ public interface Controlador {
         }).recover(recuperarEjecucion()).toCompletableFuture();
     }
 
-    default CompletionStage<Result> ejecutar(Comando comando, Long idreserva) {
+    default CompletionStage<Result> ejecutar(ComandoConsulta comandoConsulta, Long idReserva) {
         Map<String, String> contextMap = Option.of(MDC.getCopyOfContextMap()).getOrElse(new HashMap<>());
-        return comando.ejecutar(idreserva).map(consecuencia -> {
+        return comandoConsulta.ejecutar(idReserva).map(consecuencia -> {
+            MDC.setContextMap(contextMap);
+            return consecuencia.getRespuesta().fold(
+                    this::obtenerRespuestaConsecuenciaError,
+                    this::obtenerRespuestaConsecuenciaExitosa
+            );
+        }).recover(recuperarEjecucion()).toCompletableFuture();
+    }
+
+    default CompletionStage<Result> ejecutar(ComandoActualizar comandoActualizar, JsonNode json, Long idReserva) {
+        Map<String, String> contextMap = Option.of(MDC.getCopyOfContextMap()).getOrElse(new HashMap<>());
+        return comandoActualizar.ejecutar(json, idReserva).map(consecuencia -> {
             MDC.setContextMap(contextMap);
             return consecuencia.getRespuesta().fold(
                     this::obtenerRespuestaConsecuenciaError,
